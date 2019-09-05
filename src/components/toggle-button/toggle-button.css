@@ -1,0 +1,40 @@
+#toggle-button{ display: none; }
+.button-label{
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    background-color: #ccc;
+    box-shadow: #ccc 0px 0px 0px 2px;
+    border-radius: 30px;
+    overflow: hidden;
+}
+.circle{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #fff;
+}
+.button-label .text {
+    line-height: 30px;
+    font-size: 18px;
+    text-shadow: 0 0 2px #ddd;
+}
+
+.on { color: red; display: inline-block; text-indent: 35px;}
+.off { color: red; display: inline-block; text-indent: 10px;}
+.button-label .circle{
+    left: 0;
+    transition: all 0.3s;
+}
+.button-label .float-left{
+    left: 50px;
+}
+#toggle-button:checked + label.button-label .on{ display: inline-block; }
+#toggle-button:checked + label.button-label .off{ display: none; }
+#toggle-button:checked + label.button-label{
+    background-color: #51ccee;
+}

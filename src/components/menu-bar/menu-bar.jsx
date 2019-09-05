@@ -29,6 +29,7 @@ import SB3Downloader from '../../containers/sb3-downloader.jsx';
 import DeletionRestorer from '../../containers/deletion-restorer.jsx';
 import TurboMode from '../../containers/turbo-mode.jsx';
 import MenuBarHOC from '../../containers/menu-bar-hoc.jsx';
+import ToggleButton from '../toggle-button/toggleButton.jsx'
 
 import {openTipsLibrary} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
@@ -59,6 +60,10 @@ import {
     loginMenuOpen
 } from '../../reducers/menus';
 
+import {
+    updateShowSound
+} from '../../reducers/show-sound';
+ 
 import collectMetadata from '../../lib/collect-metadata';
 
 import styles from './menu-bar.css';
@@ -157,6 +162,9 @@ class MenuBar extends React.Component {
             'getSaveToComputerHandler',
             'restoreOptionMessage'
         ]);
+        this.state = {
+            showSound: true
+        }
     }
     componentDidMount () {
         document.addEventListener('keydown', this.handleKeyPress);
@@ -269,6 +277,12 @@ class MenuBar extends React.Component {
         }
         }
     }
+    handChange(e) {
+        e.preventDefault()
+        let sate = !this.state.showSound
+        this.setState({showSound: sate})
+        this.props.onUpdateShowSoude(sate)
+    }
     render () {
         const saveNowMessage = (
             <FormattedMessage
@@ -311,6 +325,12 @@ class MenuBar extends React.Component {
                 {remixMessage}
             </Button>
         );
+        const gStyle = {
+            position:'fixed',
+            top: '10px',
+            right: '320px',
+            zIndex: 2000
+        }
         return (
             <Box
                 className={classNames(
@@ -318,6 +338,11 @@ class MenuBar extends React.Component {
                     styles.menuBar
                 )}
             >
+                <div style={gStyle} onClick={this.handChange.bind(this)}>
+                        <ToggleButton data={{bottom: false, text: '显示源码'}}/>
+                   
+                </div>
+               
                 <div className={styles.mainMenu}>
                     <div className={styles.fileGroup}>
                         <div className={classNames(styles.menuBarItem)}>
@@ -734,6 +759,7 @@ MenuBar.propTypes = {
     onClickRemix: PropTypes.func,
     onClickSave: PropTypes.func,
     onClickSaveAsCopy: PropTypes.func,
+    onUpdateShowSoude: PropTypes.func,
     onLogOut: PropTypes.func,
     onOpenRegistration: PropTypes.func,
     onOpenTipLibrary: PropTypes.func,
@@ -790,6 +816,7 @@ const mapDispatchToProps = dispatch => ({
     onClickAccount: () => dispatch(openAccountMenu()),
     onRequestCloseAccount: () => dispatch(closeAccountMenu()),
     onClickFile: () => dispatch(openFileMenu()),
+    onUpdateShowSoude: (state) => dispatch(updateShowSound(state)),
     onRequestCloseFile: () => dispatch(closeFileMenu()),
     onClickEdit: () => dispatch(openEditMenu()),
     onRequestCloseEdit: () => dispatch(closeEditMenu()),

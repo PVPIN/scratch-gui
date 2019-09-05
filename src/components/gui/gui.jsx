@@ -15,6 +15,7 @@ import CostumeTab from '../../containers/costume-tab.jsx';
 import TargetPane from '../../containers/target-pane.jsx';
 import SoundTab from '../../containers/sound-tab.jsx';
 import StageWrapper from '../../containers/stage-wrapper.jsx';
+import ShowSound from '../../containers/show-sound.jsx'
 import Loader from '../loader/loader.jsx';
 import Box from '../box/box.jsx';
 import MenuBar from '../menu-bar/menu-bar.jsx';
@@ -99,6 +100,7 @@ const GUIComponent = props => {
         onActivateSoundsTab,
         onActivateTab,
         onClickLogo,
+        updateShowSound,
         onExtensionButtonClick,
         onProjectTelemetryEvent,
         onRequestCloseBackdropLibrary,
@@ -116,6 +118,7 @@ const GUIComponent = props => {
         telemetryModalVisible,
         tipsLibraryVisible,
         vm,
+        showSound,
         ...componentProps
     } = omit(props, 'dispatch');
     if (children) {
@@ -134,7 +137,6 @@ const GUIComponent = props => {
     if (isRendererSupported === null) {
         isRendererSupported = Renderer.isSupported();
     }
-
     return (<MediaQuery minWidth={layout.fullSizeMinWidth}>{isFullSize => {
         const stageSize = resolveStageSize(stageSizeMode, isFullSize);
 
@@ -212,6 +214,7 @@ const GUIComponent = props => {
                     canManageFiles={canManageFiles}
                     canRemix={canRemix}
                     canSave={canSave}
+                    updateShowSound={updateShowSound}
                     canShare={canShare}
                     className={styles.menuBarPosition}
                     enableCommunity={enableCommunity}
@@ -331,21 +334,29 @@ const GUIComponent = props => {
                                 <Backpack host={backpackHost} />
                             ) : null}
                         </Box>
-
-                        <Box className={classNames(styles.stageAndTargetWrapper, styles[stageSize])}>
-                            <StageWrapper
-                                isRendererSupported={isRendererSupported}
-                                isRtl={isRtl}
-                                stageSize={stageSize}
-                                vm={vm}
-                            />
-                            <Box className={styles.targetWrapper}>
-                                <TargetPane
+                            {showSound ? (
+                                <Box className={classNames(styles.stageAndTargetWrapper, styles[stageSize])}>
+                                    <StageWrapper
+                                        isRendererSupported={isRendererSupported}
+                                        isRtl={isRtl}
+                                        stageSize={stageSize}
+                                        vm={vm}
+                                    />
+                                    <Box className={styles.targetWrapper}>
+                                        <TargetPane
+                                            stageSize={stageSize}
+                                            vm={vm}
+                                        />
+                                    </Box>
+                             </Box>
+                            ) : (<Box className={classNames(styles.stageAndTargetWrapper, styles[stageSize])}>
+                                <ShowSound
+                                    isRendererSupported={isRendererSupported}
+                                    isRtl={isRtl}
                                     stageSize={stageSize}
                                     vm={vm}
                                 />
-                            </Box>
-                        </Box>
+                            </Box>)}
                     </Box>
                 </Box>
                 <DragLayer />
@@ -438,10 +449,14 @@ GUIComponent.defaultProps = {
     stageSizeMode: STAGE_SIZE_MODES.large
 };
 
-const mapStateToProps = state => ({
-    // This is the button's mode, as opposed to the actual current state
-    stageSizeMode: state.scratchGui.stageSize.stageSize
-});
+const mapStateToProps = state => {
+   return  {
+        // This is the button's mode, as opposed to the actual current state
+        stageSizeMode: state.scratchGui.stageSize.stageSize,
+        showSound: state.scratchGui.showSound
+    }
+};
+
 
 export default injectIntl(connect(
     mapStateToProps

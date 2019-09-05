@@ -13,7 +13,9 @@ class Controls extends React.Component {
             'handleGreenFlagClick',
             'handleStopAllClick'
         ]);
+  
     }
+  
     handleGreenFlagClick (e) {
         e.preventDefault();
         if (e.shiftKey) {
@@ -24,10 +26,26 @@ class Controls extends React.Component {
             }
             this.props.vm.greenFlag();
         }
+       
+
+
     }
     handleStopAllClick (e) {
         e.preventDefault();
         this.props.vm.stopAll();
+        const targets = this.props.vm.runtime.executableTargets;
+       
+        console.log(targets)
+        for (let t = targets.length - 1; t >= 0; t--) {
+            const target = targets[t];
+            const scripts = target.blocks.getScripts();
+            console.log(target,scripts)
+            for (let j = 0; j < scripts.length; j++) {
+                const topBlockId = scripts[j];
+             
+                alert(target.blocks.blockToXML(topBlockId, ''));
+            }
+        }    
     }
     render () {
         const {
@@ -47,6 +65,7 @@ class Controls extends React.Component {
             />
         );
     }
+  
 }
 
 Controls.propTypes = {

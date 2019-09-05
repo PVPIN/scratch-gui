@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {Fragment} from 'react';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
 import ReactModal from 'react-modal';
@@ -16,8 +16,12 @@ import {
     activateTab,
     BLOCKS_TAB_INDEX,
     COSTUMES_TAB_INDEX,
-    SOUNDS_TAB_INDEX
+    SOUNDS_TAB_INDEX,
 } from '../reducers/editor-tab';
+
+import {
+  updateShowSound
+} from '../reducers/show-sound';
 
 import {
     closeCostumeLibrary,
@@ -48,6 +52,12 @@ const messages = defineMessages({
 });
 
 class GUI extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            showSound: true
+        }
+    }
     componentDidMount () {
         setIsScratchDesktop(this.props.isScratchDesktop);
         this.setReduxTitle(this.props.projectTitle);
@@ -76,6 +86,13 @@ class GUI extends React.Component {
             this.props.onUpdateReduxProjectTitle(newTitle);
         }
     }
+    handChange(e) {
+        e.preventDefault();
+        console.log(this)
+        let state = !this.state.showSound
+        this.setState({showSound: state})
+        this.props.onUpdateShowSoude(state);
+    }
     render () {
         if (this.props.isError) {
             throw new Error(
@@ -93,6 +110,7 @@ class GUI extends React.Component {
             onStorageInit,
             onUpdateProjectId,
             onUpdateReduxProjectTitle,
+            onUpdateShowSoude,
             onVmInit,
             projectHost,
             projectId,
@@ -104,13 +122,19 @@ class GUI extends React.Component {
             loadingStateVisible,
             ...componentProps
         } = this.props;
+       
         return (
-            <GUIComponent
-                loading={fetchingProject || isLoading || loadingStateVisible}
-                {...componentProps}
-            >
-                {children}
-            </GUIComponent>
+            <Fragment>
+                <GUIComponent
+                    loading={fetchingProject || isLoading || loadingStateVisible}
+                   showSound
+
+                    {...componentProps}   
+                >
+                    {children}
+                </GUIComponent>
+            </Fragment>
+           
         );
     }
 }
